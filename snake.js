@@ -238,15 +238,17 @@ class Game {
     
     // Draw the food
     var food = new Image();
-    food.src = "Phone.jpg";
+    food.src = "food.png";
     
     food.setAttribute("id","food");
     
-
+    //let food = document.querySelector("#food");
+    console.log(food);
+    //ctx.drawImage(food, xy[0] * this.tileWidth, xy[1] * this.tileHeight, this.tileWidth*2, 2*this.tileHeight);
     ctx.drawImage(
       food,
       this.food[0] * this.tileWidth,
-      this.food[1] * this.tileHeight - food.height / 4
+      this.food[1] * this.tileHeight,this.tileWidth*2, 2*this.tileHeight
     );
     console.log(ctx);
     //GameOver
