@@ -33,8 +33,8 @@ class Game {
     this.alreadyMoved = false;
     this.width = width;
     this.height = height;
-    this.tileWidth = width / 60;
-    this.tileHeight = height / 60;
+    this.tileWidth = 15;
+    this.tileHeight = 15;
     // Initialize a 1 sized snake at the center of the game board
     this.snake = [
       [
@@ -50,16 +50,13 @@ class Game {
   
   move(e) {
     var popup = document.getElementById("pausePopup");
-      if(e.detail.dir == "left"){
-        console.log('bravo');
-      }
+      
       switch (e.detail.dir) {
         case "left":
-          console.log('leftyyyyyyyyyyyyyyyyyy');
+          
           if (this.nextMove != "right" && !this.alreadyMoved) {
             this.nextMove = "left";
             this.alreadyMoved = true;
-            console.log(this.nextMove);
           }
           break;
         case "up":
@@ -83,10 +80,10 @@ class Game {
         case " ":
           this.nextMove = undefined;
           this.alreadyMoved = false;
-          console.log('stupido');
+          
           break;
         default:
-          console.log('coglio');
+          
           // Do nothing just ignore it
           break;
       }
@@ -175,16 +172,20 @@ class Game {
     // Game Over If snake is going out ouf the game
     if (newHead[0] < 0) {
       this.gameover = true;
+      this.temp = true;
       newHead[0] = 0;
     } else if (newHead[0] >= Math.round(this.width / this.tileWidth)) {
       this.gameover = true;
+      this.temp = true;
       newHead[0] = Math.round(this.width / this.tileWidth) - 1;
     }
     if (newHead[1] < 0) {
       this.gameover = true;
+      this.temp = true;
       newHead[1] = 0;
     } else if (newHead[1] >= Math.round(this.height / this.tileHeight)) {
       this.gameover = true;
+      this.temp = true;
       newHead[1] = Math.round(this.height / this.tileHeight) - 1;
     }
 
@@ -205,6 +206,7 @@ class Game {
     for (var i = 1; i < this.snake.length; i++) {
       if (newHead[0] == this.snake[i][0] && newHead[1] == this.snake[i][1]) {
         this.gameover = true;
+        this.temp = true;
         return;
       }
     }
@@ -224,31 +226,39 @@ class Game {
     ctx.strokeRect(0, 0, this.width, this.height);
 
     // Draw the snake
-    ctx.fillStyle = "blue";
+    
+    let ghost = document.querySelector("#ghost");
+    
     for (var i = 0; i < this.snake.length; i++) {
       var xy = this.snake[i];
-      ctx.fillRect(
-        xy[0] * this.tileWidth,
-        xy[1] * this.tileHeight,
-        this.tileWidth,
-        this.tileHeight
-      );
+      //this.snake[i] = "fantasma.png";
+      ctx.drawImage(ghost, xy[0] * this.tileWidth, xy[1] * this.tileHeight, this.tileWidth*2, 2*this.tileHeight);
+      
     }
-
+    
     // Draw the food
     var food = new Image();
-    food.src = "ghost.ico";
+    food.src = "Phone.jpg";
+    
+    food.setAttribute("id","food");
+    
+
     ctx.drawImage(
       food,
       this.food[0] * this.tileWidth,
       this.food[1] * this.tileHeight - food.height / 4
     );
+    console.log(ctx);
     //GameOver
     if (this.gameover) {
-      document.querySelector("#restart").classList.remove("hide");
-      var audio = new AudioContext();
-      audio.pause();
-      ctx.font = "48px serif";
+      document.querySelector("#game-board").classList.remove("hide");
+      document.getElementById("theme").pause();
+      
+      over.play();
+      
+
+      
+      ctx.font = "100px test1";
       ctx.fillStyle = "black";
       var displayGameOver = "GAME OVER";
       var text = ctx.measureText(displayGameOver);
@@ -257,22 +267,23 @@ class Game {
         (this.width - text.width) / 2,
         this.height / 2
       );
-      // return;
+      
 
       // Quick restart on key down
-      document.onkeydown = function() {
-        restart();
-      };
+      //document.onkeydown = function() {
+      //  restart();
+      //};
     }
   }
 
-  restart() {}
+  //restart() {}
 }
 
 function play() {
-  var audio = document.getElementById("audio");
-  console.log(audio);
+  var audio = document.getElementById("theme");
+  
   audio.play();
+  
   start();
 }
 
@@ -280,15 +291,16 @@ function start() {
   const menu = document.getElementById("menu");
   menu.setAttribute("class","hide");
 
-  var div = document.getElementsByName("game-board");
-  var canvas = document.createElement("canvas");
-  canvas.setAttribute("width",window.screen.availWidth);
-  canvas.setAttribute("height",window.screen.availHeight);
-  canvas.setAttribute("id","game");
- 
-  console.log(div);
-  div[0].appendChild(canvas);
-  console.log(canvas);
+
+  var div = document.getElementById("score-panel");
+  div.setAttribute("class","hide");
+
+  var canvas = document.querySelector("#game");
+  canvas.classList.remove("hide");
+  canvas.setAttribute("width",window.screen.width);
+  canvas.setAttribute("height",window.screen.height);
+    
+  console.log(localStorage);
 
   //const menu = document.createElement('div');
   //const root = document.getElementById("root");
@@ -314,11 +326,14 @@ function start() {
  // ist.appendChild(img2);
 
 
-  game = new Game(window.screen.availWidth, window.screen.availHeight);
-  console.log(window.screen.availWidth);
+  game = new Game(window.screen.width, window.screen.height);
+ 
   document.onkeydown = function(e) {
     game.keyDown(e);
   };
+
+  
+
   document.addEventListener('swiped', function(e) {
     //console.log(e.target); // element that was swiped
     //console.log(e.detail); // see event data below
@@ -335,6 +350,7 @@ function start() {
 
 // The game update and rendering loop
 function loop(game, ctx) {
+  if(this.gameover==true){return }else{
   game.update();
   game.render(ctx);
   // every 5 food eaten, increase spead by 10 ms
@@ -351,9 +367,26 @@ function loop(game, ctx) {
   }
   setTimeout(function() {
     loop(game, ctx);
-  }, speed);
+    }, speed);
+}
 }
 
 function restart() {
   location.reload();
+}
+
+function showLeaderboard() {
+  const score = document.querySelector("#punteggio");
+  
+  for(let i=0; i<localStorage.length; i++) {
+    let key = localStorage.key(i);
+
+    let t = document.createElement('string');
+    t.textContent = localStorage.getItem(key);
+    console.log(score);
+    score.appendChild(t);
+    
+    console.log(localStorage.getItem(key));
+  }
+  
 }
