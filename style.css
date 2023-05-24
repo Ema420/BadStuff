@@ -3,8 +3,8 @@ body {
   background-image: url("sfondo.png");
   background-position: top;
   background-size: cover;
-  z-index: -2
-
+  z-index: -2;
+  overscroll-behavior: contain;
   }
   
   #root {
