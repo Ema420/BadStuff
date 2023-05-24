@@ -253,6 +253,8 @@ class Game {
     console.log(ctx);
     //GameOver
     if (this.gameover) {
+        
+      location.href = 'gameover.html';
       document.querySelector("#game-board").classList.remove("hide");
       document.getElementById("theme").pause();
       
