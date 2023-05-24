@@ -131,7 +131,7 @@ class Game {
   // Add a food somewhere in the game (randomly)
   addFood() {
     var x = Math.floor(Math.random() * Math.round(this.width / this.tileWidth));
-    var y = Math.floor(Math.random() * Math.round(this.width / this.tileHeight));
+    var y = Math.floor(Math.random() * Math.round(this.height / this.tileHeight));
 
     for (var i = 0; i < this.snake.length; i++) {
       var xy = this.snake[i];
