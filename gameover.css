@@ -1,0 +1,23 @@
+body {
+  
+    background-image: url("sfondo.png");
+    background-position: top;
+    background-size: cover;
+    z-index: -2
+}
+    @font-face {
+      font-family: "test";
+      src: url("test.ttf");
+    }
+    @font-face {
+      font-family: "test1";
+      src: url("Destone.otf");
+    }
+
+h1 {
+    font-family: "test1";
+    font-size: 50px;
+    border-color: red;
+    color: white;
+    
+}  
